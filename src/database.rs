@@ -1,7 +1,9 @@
 use crate::error::Error;
+use crate::models::User;
 use sqlx::{FromRow, SqlitePool};
 use uuid::Uuid;
 
+#[derive(Clone)]
 pub struct Database {
     pool: SqlitePool,
 }
@@ -28,13 +30,9 @@ impl Database {
     }
 
     pub async fn get_users(&self) -> Result<Vec<User>, Error> {
-        let users = sqlx::query_as::<_, User>("select id, username from users").fetch_all(&self.pool).await?;
+        let users = sqlx::query_as::<_, User>("select id, username from users")
+            .fetch_all(&self.pool)
+            .await?;
         Ok(users)
     }
-}
-
-#[derive(Debug, FromRow)]
-pub struct User {
-    id: String,
-    username: String,
 }
