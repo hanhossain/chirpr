@@ -12,4 +12,5 @@ async-std = { version = "1.9.0", features = ["attributes"] }
 serde = { version = "1.0.123", features = ["derive"] }
 sqlx = { version = "0.4.2", features = ["runtime-async-std-native-tls", "sqlite"] }
 thiserror = "1.0.23"
+tide = "0.16.0"
 uuid = { version = "0.8.2", features = ["v4"] }
