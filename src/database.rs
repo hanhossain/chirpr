@@ -1,6 +1,6 @@
 use crate::error::Error;
 use crate::models::User;
-use sqlx::{FromRow, SqlitePool};
+use sqlx::SqlitePool;
 use uuid::Uuid;
 
 #[derive(Clone)]

@@ -1,6 +1,5 @@
 use crate::database::Database;
 use crate::models::UserNoId;
-use tide::prelude::*;
 use tide::{Body, Request, Response, StatusCode};
 
 mod database;
