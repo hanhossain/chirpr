@@ -1,5 +1,11 @@
+use crate::database::Database;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+
+#[derive(Clone)]
+pub struct State {
+    pub database: Database,
+}
 
 #[derive(Debug, Deserialize, Serialize, FromRow)]
 pub struct User {
