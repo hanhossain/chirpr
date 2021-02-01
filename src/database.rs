@@ -48,12 +48,11 @@ impl Database {
     pub async fn update_user(&self, user: User) -> Result<Option<User>, Error> {
         let mut transaction = self.pool.begin().await?;
 
-        let existing = sqlx::query_as::<_, User>("select id, username from users where id == ?")
+        if let None = sqlx::query_as::<_, User>("select id, username from users where id == ?")
             .bind(&user.id)
             .fetch_optional(&mut transaction)
-            .await?;
-
-        if let None = existing {
+            .await?
+        {
             return Ok(None);
         }
 
@@ -66,5 +65,26 @@ impl Database {
         transaction.commit().await?;
 
         Ok(Some(user))
+    }
+
+    pub async fn delete_user(&self, user_id: &str) -> Result<bool, Error> {
+        let mut transaction = self.pool.begin().await?;
+
+        if let None = sqlx::query_as::<_, User>("select id, username from users where id == ?")
+            .bind(user_id)
+            .fetch_optional(&mut transaction)
+            .await?
+        {
+            return Ok(false);
+        }
+
+        sqlx::query("delete from users where id == ?")
+            .bind(user_id)
+            .execute(&mut transaction)
+            .await?;
+
+        transaction.commit().await?;
+
+        Ok(true)
     }
 }

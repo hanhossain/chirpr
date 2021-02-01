@@ -11,6 +11,7 @@ pub fn build_routes(state: State) -> Server<State> {
         .post(user_controller::create_user);
 
     app.at("/api/users/:user_id")
+        .delete(user_controller::delete_user)
         .put(user_controller::update_user);
 
     app

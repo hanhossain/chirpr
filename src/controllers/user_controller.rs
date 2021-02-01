@@ -49,3 +49,13 @@ pub async fn update_user(mut req: Request<State>) -> Result {
 
     Ok(response)
 }
+
+pub async fn delete_user(req: Request<State>) -> Result {
+    let user_id = req.param("user_id")?;
+    let response = match req.state().database.delete_user(user_id).await? {
+        true => Response::new(StatusCode::NoContent),
+        false => Response::new(StatusCode::NotFound),
+    };
+
+    Ok(response)
+}
