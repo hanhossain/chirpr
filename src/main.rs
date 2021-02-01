@@ -1,10 +1,6 @@
-use crate::database::Database;
-use crate::models::State;
-
-mod controllers;
-mod database;
-mod error;
-mod models;
+use chirpr::controllers;
+use chirpr::database::Database;
+use chirpr::models::State;
 
 #[async_std::main]
 async fn main() -> tide::Result<()> {

@@ -7,7 +7,7 @@ pub struct State {
     pub database: Database,
 }
 
-#[derive(Debug, Deserialize, Serialize, FromRow)]
+#[derive(Debug, Deserialize, Serialize, FromRow, Eq, PartialEq)]
 pub struct User {
     pub id: String,
     pub username: String,
