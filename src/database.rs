@@ -3,6 +3,8 @@ use crate::models::User;
 use sqlx::SqlitePool;
 use uuid::Uuid;
 
+const SCHEMA: &str = include_str!("../schema/schema.sql");
+
 #[derive(Clone)]
 pub struct Database {
     pool: SqlitePool,
@@ -11,7 +13,14 @@ pub struct Database {
 impl Database {
     pub async fn connect(uri: &str) -> Result<Database, Error> {
         let pool = SqlitePool::connect(uri).await?;
+
+        sqlx::query(SCHEMA).execute(&pool).await?;
+
         Ok(Database { pool })
+    }
+
+    pub async fn in_memory() -> Result<Database, Error> {
+        Database::connect("sqlite::memory:").await
     }
 
     pub async fn create_user(&self, username: &str) -> Result<User, Error> {
