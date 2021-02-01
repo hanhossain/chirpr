@@ -9,8 +9,8 @@ pub struct Database {
 }
 
 impl Database {
-    pub async fn connect() -> Result<Database, Error> {
-        let pool = SqlitePool::connect("chirpr.db").await?;
+    pub async fn connect(uri: &str) -> Result<Database, Error> {
+        let pool = SqlitePool::connect(uri).await?;
         Ok(Database { pool })
     }
 
