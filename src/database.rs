@@ -44,4 +44,27 @@ impl Database {
 
         Ok(user)
     }
+
+    pub async fn update_user(&self, user: User) -> Result<Option<User>, Error> {
+        let mut transaction = self.pool.begin().await?;
+
+        let existing = sqlx::query_as::<_, User>("select id, username from users where id == ?")
+            .bind(&user.id)
+            .fetch_optional(&mut transaction)
+            .await?;
+
+        if let None = existing {
+            return Ok(None);
+        }
+
+        sqlx::query("update users set username = ? where id == ?")
+            .bind(&user.username)
+            .bind(&user.id)
+            .execute(&mut transaction)
+            .await?;
+
+        transaction.commit().await?;
+
+        Ok(Some(user))
+    }
 }

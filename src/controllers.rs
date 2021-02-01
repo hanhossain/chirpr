@@ -10,5 +10,8 @@ pub fn build_routes(state: State) -> Server<State> {
         .get(user_controller::get_users)
         .post(user_controller::create_user);
 
+    app.at("/api/users/:user_id")
+        .put(user_controller::update_user);
+
     app
 }
