@@ -13,7 +13,17 @@ pub async fn get_users(req: Request<State>) -> Result {
 
 pub async fn create_user(mut req: Request<State>) -> Result {
     let user = req.body_json::<UserNoId>().await?;
-    let user = req.state().database.create_user(&&user.username).await?;
+    let database = &req.state().database;
+
+    if let Some(user) = database.get_user(&user.username).await? {
+        let response = Response::builder(StatusCode::Ok)
+            .body(Body::from_json(&user)?)
+            .build();
+
+        return Ok(response);
+    }
+
+    let user = database.create_user(&user.username).await?;
 
     let response = Response::builder(StatusCode::Created)
         .body(Body::from_json(&user)?)
