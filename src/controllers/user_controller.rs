@@ -11,11 +11,24 @@ pub async fn get_users(req: Request<State>) -> Result {
     Ok(response)
 }
 
+pub async fn get_user(req: Request<State>) -> Result {
+    let user_id = req.param("user_id")?;
+    let user = req.state().database.get_user_by_id(user_id).await?;
+    let response = match user {
+        Some(user) => Response::builder(StatusCode::Ok)
+            .body(Body::from_json(&user)?)
+            .build(),
+        None => Response::new(StatusCode::NotFound),
+    };
+
+    Ok(response)
+}
+
 pub async fn create_user(mut req: Request<State>) -> Result {
     let user = req.body_json::<UserNoId>().await?;
     let database = &req.state().database;
 
-    if let Some(user) = database.get_user(&user.username).await? {
+    if let Some(user) = database.get_user_by_username(&user.username).await? {
         let response = Response::builder(StatusCode::Ok)
             .body(Body::from_json(&user)?)
             .build();

@@ -36,7 +36,16 @@ impl Database {
         Ok(users)
     }
 
-    pub async fn get_user(&self, username: &str) -> Result<Option<User>, Error> {
+    pub async fn get_user_by_id(&self, user_id: &str) -> Result<Option<User>, Error> {
+        let user = sqlx::query_as::<_, User>("select id, username from users where id == ?")
+            .bind(user_id)
+            .fetch_optional(&self.pool)
+            .await?;
+
+        Ok(user)
+    }
+
+    pub async fn get_user_by_username(&self, username: &str) -> Result<Option<User>, Error> {
         let user = sqlx::query_as::<_, User>("select id, username from users where username == ?")
             .bind(username)
             .fetch_optional(&self.pool)
